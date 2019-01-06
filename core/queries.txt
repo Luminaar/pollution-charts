@@ -1,0 +1,104 @@
+prefix sch:<http://schema.org/>
+prefix owl:<http://www.w3.org/2002/07/owl#>
+prefix skos:<http://www.w3.org/2004/02/skos/core#>
+
+select distinct ?chemical, ?place, ?lat, ?long where 
+{
+?chemical a skos:Concept;
+         skos:inScheme <http://linked.opendata.cz/ontology/domain/cenia.cz/chemicals/ConceptScheme>.
+?check   sch:object ?chemical;
+         a sch:CheckAction;
+         sch:startTime "2012-01-01T00:00:00"^^<http://www.w3.org/2001/XMLSchema#dateTime>;
+         sch:location ?location.
+?place   owl:sameAs ?location;
+         sch:name ?name;
+         sch:geo ?geo.
+?geo     sch:latitude ?lat;
+         sch:longitude ?long.
+
+
+}
+
+
+
+prefix sch:<http://schema.org/>
+prefix owl:<http://www.w3.org/2002/07/owl#>
+prefix skos:<http://www.w3.org/2004/02/skos/core#>
+prefix syntax:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+select distinct ?code where 
+{
+
+?place   a sch:Place.
+?place   sch:address ?addr.
+?addr    sch:addressRegion ?code.
+
+
+}
+
+
+prefix sch:<http://schema.org/>
+prefix owl:<http://www.w3.org/2002/07/owl#>
+prefix skos:<http://www.w3.org/2004/02/skos/core#>
+prefix syntax:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+select distinct ?start where 
+{
+?x sch:startTime ?start.
+} order by ?start
+
+
+
+
+# All chemicals
+prefix irz: <http://linked.opendata.cz/ontology/domain/irz/>
+prefix sch:<http://schema.org/>
+prefix skos: <http://www.w3.org/2004/02/skos/core#>
+
+select * where {
+	?iri a irz:Latka;
+	       sch:name ?name;
+	       irz:vzorec ?vzorec;
+	       irz:vetaR ?vetaR;
+	       irz:vetaS ?vetaS.
+
+	?veta
+}
+
+# S-vety
+prefix irz: <http://linked.opendata.cz/ontology/domain/irz/>
+prefix sch:<http://schema.org/>
+prefix skos: <http://www.w3.org/2004/02/skos/core#>
+
+select * where {
+
+?iri a irz:VetaS;
+       skos:notation ?notation;
+       skos:prefLabel ?label.
+
+}
+
+
+# Check actions for one chemical
+prefix sch:<http://schema.org/>
+prefix owl:<http://www.w3.org/2002/07/owl#>
+prefix skos:<http://www.w3.org/2004/02/skos/core#>
+prefix rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+prefix cenia:<http://linked.opendata.cz/ontology/domain/cenia.cz/>
+
+select distinct ?check, ?emtype, ?region, ?year, ?value, ?urceni, ?instrument where 
+{
+
+?check        sch:object <http://linked.opendata.cz/ontology/domain/cenia.cz/chemicals/celkový-dusík>;
+              sch:additionalType ?emtype;
+              sch:startTime ?year;
+              rdf:value ?value;
+              sch:instrument ?instrument;
+              sch:location ?location.
+ 
+?place        owl:sameAs ?location.
+?place        sch:address ?addr.
+?addr         sch:addressRegion ?region.
+OPTIONAL      {?check cenia:urceniOdpadu ?urceni} .
+
+} order by ?region ?year
