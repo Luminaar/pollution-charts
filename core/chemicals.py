@@ -1,8 +1,9 @@
 import csv
 from dataclasses import dataclass
 from itertools import groupby
-from typing import Dict
+from typing import Dict, Optional
 
+import os
 import service
 
 
@@ -16,7 +17,7 @@ class Chemical:
     r_labels: dict
 
 
-def get_chemicals():
+def retrieve_chemical_data():
     query = """prefix sch:<http://schema.org/>
     prefix owl:<http://www.w3.org/2002/07/owl#>
     prefix skos:<http://www.w3.org/2004/02/skos/core#>
@@ -43,10 +44,12 @@ def get_chemicals():
     return [{k: v["value"] for k, v in result.items()} for result in results]
 
 
-def read_csv(filename):
+def read_csv(path):
     """Return contents of a CSV file as a dict."""
 
-    with open(filename) as f:
+    full_path = os.path.join(os.path.dirname(__file__), path)
+
+    with open(full_path) as f:
         reader = csv.DictReader(f)
         return [line for line in reader]
 
@@ -82,13 +85,11 @@ def get_all_chemicals() -> Dict[str, Chemical]:
     """Load and return a dictionary of all chemicals."""
 
     r_labels = {
-        r["iri"]: (r["notation"], r["label"])
-        for r in read_csv("./core/data/r-vety.csv")
+        r["iri"]: (r["notation"], r["label"]) for r in read_csv("data/r-vety.csv")
     }
     s_labels = {
-        r["iri"]: (r["notation"], r["label"])
-        for r in read_csv("./core/data/s-vety.csv")
+        r["iri"]: (r["notation"], r["label"]) for r in read_csv("data/s-vety.csv")
     }
 
-    data = get_chemicals()
+    data = retrieve_chemical_data()
     return {chem.iri: chem for chem in transform_chemicals(data, s_labels, r_labels)}
