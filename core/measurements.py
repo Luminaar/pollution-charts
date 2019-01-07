@@ -61,7 +61,7 @@ def get_measurements(chemical: Chemical) -> Generator:
     ?addr         sch:addressRegion ?district.
     OPTIONAL      {?iri cenia:urceniOdpadu ?waste_designation}.
 
-    } order by ?district ?year
+    } order by ?region ?year
     """
         % chemical.iri
     )
