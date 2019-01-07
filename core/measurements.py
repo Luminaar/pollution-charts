@@ -8,16 +8,7 @@ import service
 from chemicals import Chemical
 
 
-@dataclass(order=True)
-class Measurment:
-    iri: str
-    region: str
-    emission_type: str
-    year: int
-    value: float
-    instrument: str
-    chemical: Optional[Chemical]
-    waste_designation: Optional[str]
+class Measurement:
 
     def __init__(
         self,
@@ -41,9 +32,14 @@ class Measurment:
         self.chemical = chemical
         self.waste_designation = waste_designation
 
+    def __repr__(self):
+        return f"Chemical: {self.name}"
 
-def get_measurments(chemical: Chemical) -> Generator:
-    """Return a list of measurments for given chemical."""
+
+
+
+def get_measurements(chemical: Chemical) -> Generator:
+    """Return a list of measurements for given chemical."""
 
     query = (
         """
@@ -83,24 +79,24 @@ def get_measurments(chemical: Chemical) -> Generator:
         if not kwargs["district"]:
             continue
         region = districts[kwargs["district"].strip()]
-        measurment = Measurment(chemical=chemical, region=region, **kwargs)
-        yield measurment
+        measurement = Measurement(chemical=chemical, region=region, **kwargs)
+        yield measurement
 
 
-def get_regions(ms: List[Measurment]) -> Set:
+def get_regions(ms: List[Measurement]) -> Set:
     """Return a set of all regions from passed mesaurments."""
 
     return set(m.region for m in ms)
 
 
 def group_by_region(m):
-    """Group measurments by region and return a list of groups."""
+    """Group measurements by region and return a list of groups."""
 
     return [list(group) for key, group in groupby(m, operator.attrgetter("region"))]
 
 
 def group_by_year(m):
-    """Group measurments by year and return a list of groups."""
+    """Group measurements by year and return a list of groups."""
 
     return [list(group) for key, group in groupby(m, operator.attrgetter("year"))]
 
@@ -109,6 +105,6 @@ if __name__ == "__main__":
 
     chem = Chemical("oxid-uhelnatý-co-", "", "", {}, {})
 
-    ms = get_measurments(chem)
+    ms = get_measurements(chem)
 
     group_by_region(ms)

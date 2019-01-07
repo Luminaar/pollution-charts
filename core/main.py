@@ -1,5 +1,5 @@
 import chemicals
-import measurments
+import measurements
 
 INDENT = " " * 4
 
@@ -67,17 +67,17 @@ def print_info(chemical):
     print()
 
 
-def list_measurments(ms, fun=len, select_region=None, select_year=None):
-    """List measurments for given chemical, aggregated by `fun`. If `region` is
+def list_measurements(ms, fun=len, select_region=None, select_year=None):
+    """List measurements for given chemical, aggregated by `fun`. If `region` is
     None, list for all regions. If `year` is None, list for all years."""
 
-    print(f"MEASURMENTS ({len(ms)})")
-    for region_group in measurments.group_by_region(ms):
+    print(f"measurementS ({len(ms)})")
+    for region_group in measurements.group_by_region(ms):
         region = region_group[0].region
         if (region and select_region is None) or region == select_region:
             print(f"{INDENT}{region}")
 
-            for year_group in measurments.group_by_year(region_group):
+            for year_group in measurements.group_by_year(region_group):
                 year = int(year_group[0].year.split("-")[0])
                 if select_year is None or select_year == year:
                     print(INDENT * 2, year, fun(year_group))
@@ -102,8 +102,8 @@ if __name__ == "__main__":
 
     chemical = all_chemicals[iri]
 
-    ms = list(measurments.get_measurments(chemical))
-    region = choose_region(measurments.get_regions(ms))
+    ms = list(measurements.get_measurements(chemical))
+    region = choose_region(measurements.get_regions(ms))
 
     print_info(chemical)
-    list_measurments(ms, total, select_region=region)
+    list_measurements(ms, total, select_region=region)
