@@ -89,6 +89,8 @@ def get_regions(ms: List[Measurement]) -> Set:
 def group_by_region(m):
     """Group measurements by region and return a list of groups."""
 
+    m = sorted(m, key=operator.attrgetter("region"))
+
     return [list(group) for key, group in groupby(m, operator.attrgetter("region"))]
 
 
