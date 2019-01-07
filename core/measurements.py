@@ -9,18 +9,17 @@ from chemicals import Chemical
 
 
 class Measurement:
-
     def __init__(
         self,
         iri: str,
         region: str,
         district: str,
-        emission_type: str,  # TODO: Enum
+        emission_type: str,
         year: int,
         value: float,
-        instrument: str,  # TODO: Enum
+        instrument: str,
         chemical: Optional[Chemical] = None,
-        waste_designation: Optional[str] = None,  # TODO: Enum
+        waste_designation: Optional[str] = None,
     ):
         self.iri = iri
         self.region = region
@@ -34,8 +33,6 @@ class Measurement:
 
     def __repr__(self):
         return f"Chemical: {self.name}"
-
-
 
 
 def get_measurements(chemical: Chemical) -> Generator:
