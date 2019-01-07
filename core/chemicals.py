@@ -93,3 +93,10 @@ def get_all_chemicals() -> Dict[str, Chemical]:
 
     data = retrieve_chemical_data()
     return {chem.iri: chem for chem in transform_chemicals(data, s_labels, r_labels)}
+
+
+def get_chemical(iri: str) -> Optional[Chemical]:
+    """Load and return one chemical. Return None if it does not exist."""
+
+    chems = get_all_chemicals()
+    return chems.get(iri, None)
