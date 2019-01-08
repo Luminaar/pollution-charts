@@ -1,5 +1,4 @@
-import chemicals
-import measurements
+from core import chemicals, measurements
 
 INDENT = " " * 4
 
@@ -83,19 +82,11 @@ def list_measurements(ms, fun=len, select_region=None, select_year=None):
                     print(INDENT * 2, year, fun(year_group))
 
 
-def avg_value(group):
-    return sum(m.value for m in group) / len(group)
-
-
-def max_value(group):
-    return max(m.value for m in group)
-
-
 def total(group):
     return sum(m.value for m in group)
 
 
-if __name__ == "__main__":
+def run():
     all_chemicals = chemicals.get_all_chemicals()
     iri = choose_chemical(all_chemicals)
     print()
@@ -107,3 +98,10 @@ if __name__ == "__main__":
 
     print_info(chemical)
     list_measurements(ms, total, select_region=region)
+
+
+try:
+    run()
+except KeyboardInterrupt:
+    print("Stopped.")
+    exit()
