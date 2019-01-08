@@ -1,9 +1,10 @@
 import json
 import operator
+import os
 from itertools import groupby
 from typing import Generator, List, Optional, Set
 
-import service
+from core import service
 from core.chemicals import Chemical
 
 
@@ -67,7 +68,7 @@ def get_measurements(chemical: Chemical) -> Generator:
 
     results = service.retrieve(query)
 
-    with open("core/data/kraje-okresy.json") as k:
+    with open(os.path.join(os.path.dirname(__file__), "kraje-okresy.json")) as k:
         districts = json.load(k)
 
     for result in results:
