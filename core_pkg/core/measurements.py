@@ -1,11 +1,10 @@
 import json
 import operator
-from dataclasses import dataclass
 from itertools import groupby
 from typing import Generator, List, Optional, Set
 
 import service
-from chemicals import Chemical
+from core.chemicals import Chemical
 
 
 class Measurement:

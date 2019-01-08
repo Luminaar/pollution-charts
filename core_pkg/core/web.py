@@ -6,8 +6,8 @@ import random
 import string
 from typing import Callable, Generator, List, Union
 
-from chemicals import Chemical, get_chemical
-from measurements import get_measurements, group_by_region, group_by_year
+from core.chemicals import Chemical, get_chemical
+from core.measurements import get_measurements, group_by_region, group_by_year
 
 
 def color():

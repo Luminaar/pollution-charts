@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from itertools import groupby
 from typing import Dict, Optional
 
-import service
+from core import service
 
 
 @dataclass(order=True)
