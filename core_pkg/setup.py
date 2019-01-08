@@ -4,5 +4,5 @@ setup(
     name="core",
     version="0.1",
     packages=find_packages(),
-    package_data={"": ["*.csv", "*.json"]},
+    package_data={"": ["data/*.csv", "data/*.json"]},
 )
