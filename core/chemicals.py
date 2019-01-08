@@ -1,9 +1,9 @@
 import csv
+import os
 from dataclasses import dataclass
 from itertools import groupby
 from typing import Dict, Optional
 
-import os
 import service
 
 
