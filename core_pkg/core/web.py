@@ -6,7 +6,7 @@ import random
 import string
 from typing import Callable, Generator, List, Union
 
-from core.chemicals import Chemical, get_chemical
+from core.chemicals import get_chemical
 from core.measurements import get_measurements, group_by_region, group_by_year
 
 
@@ -15,7 +15,7 @@ def color():
 
 
 def get_datasets(
-    chemical: Chemical,
+    chemical: str,
     regions: Union[None, str, List[str]] = None,
     years: Union[None, int, List[int]] = None,
     fun: Callable = len,

@@ -18,7 +18,7 @@ class Measurement:
         year: int,
         value: float,
         instrument: str,
-        chemical: Optional[Chemical] = None,
+        chemical: Optional[str] = None,
         waste_designation: Optional[str] = None,
     ):
         self.iri = iri
@@ -35,7 +35,7 @@ class Measurement:
         return f"Chemical: {self.name}"
 
 
-def get_measurements(chemical: Chemical) -> Generator:
+def get_measurements(chemical: str) -> Generator:
     """Return a list of measurements for given chemical."""
 
     query = (
@@ -63,7 +63,7 @@ def get_measurements(chemical: Chemical) -> Generator:
 
     } order by ?region ?year
     """
-        % chemical.iri
+        % chemical
     )
 
     results = service.retrieve(query)

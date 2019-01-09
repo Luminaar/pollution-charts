@@ -93,7 +93,7 @@ def run():
 
     chemical = all_chemicals[iri]
 
-    ms = list(measurements.get_measurements(chemical))
+    ms = list(measurements.get_measurements(chemical.iri))
     region = choose_region(measurements.get_regions(ms))
 
     print_info(chemical)
