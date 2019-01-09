@@ -68,7 +68,7 @@ def get_measurements(chemical: Chemical) -> Generator:
 
     results = service.retrieve(query)
 
-    with open(os.path.join(os.path.dirname(__file__), "kraje-okresy.json")) as k:
+    with open(os.path.join(os.path.dirname(__file__), "data/kraje-okresy.json")) as k:
         districts = json.load(k)
 
     for result in results:
