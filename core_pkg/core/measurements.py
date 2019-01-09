@@ -31,9 +31,6 @@ class Measurement:
         self.chemical = chemical
         self.waste_designation = waste_designation
 
-    def __repr__(self):
-        return f"Chemical: {self.name}"
-
 
 def get_measurements(chemical: str) -> Generator:
     """Return a list of measurements for given chemical."""
