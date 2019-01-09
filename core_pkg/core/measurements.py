@@ -1,6 +1,7 @@
 import json
 import operator
 import os
+import statistics
 from itertools import groupby
 from typing import Generator, List, Optional, Set
 
@@ -95,6 +96,32 @@ def group_by_year(m):
     """Group measurements by year and return a list of groups."""
 
     return [list(group) for key, group in groupby(m, operator.attrgetter("year"))]
+
+
+# Aggregation functions
+def total(group):
+    """Return total of all measurment values from a group."""
+
+    return sum(m.value for m in group)
+
+
+def mean(group):
+    """Return mean of all measurment values from a group."""
+
+    group = list(group)
+    count = len(group)
+
+    return round(total(group) / count, 3)
+
+
+def median(group):
+
+    values = sorted([m.value for m in group])
+
+    return round(statistics.median(values), 3)
+
+
+AGGREGATORS = {"len": len, "total": total, "mean": mean, "median": median}
 
 
 if __name__ == "__main__":
