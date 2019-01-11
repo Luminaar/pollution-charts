@@ -4,11 +4,25 @@
   <head>
     <title>{{ chemical.name }}</title>
     <script type="text/javascript" charset="utf-8" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="static/style.css">
   </head>
 
   <body>
 
-    <div>
+    <div id="header">
+      <div id="param-form" class="select">
+        {% from "_formhelpers.html" import render_field %}
+        <form>
+            {{ render_field(form.fun) }}
+            {{ render_field(form.chemical) }}
+            <span class="form-field">
+              <input type=submit value=Odeslat>
+            </span>
+        </form>
+      </div>
+    </div>
+
+    <div id="chart">
       <canvas id="myChart"></canvas>
     </div>
 
@@ -19,14 +33,36 @@
             type: 'bar',
             data: data,
             options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero:true
-                        }
-                    }]
-                }
-            }
+              maintainAspectRation: false,
+              title: {
+                display: true,
+                text: "{{ label }} za rok",
+                fontSize: 18
+              },
+              scales: {
+                  yAxes: [{
+                      scaleLabel: {
+                        display: true,
+                        labelString: "{{ unit }} / rok",
+                        fontSize: 16
+                      },
+                      ticks: {
+                        beginAtZero:true,
+                        stepSize: '{{ unit }}' === "Hlášení" ? 1 : undefined
+                      }
+                  }],
+                  xAxes: [{
+                      scaleLabel: {
+                        display: true,
+                        labelString: "Rok",
+                        fontSize: 16
+                      },
+                  }]
+              },
+              legend: {
+                "position": "right",
+              },
+          }
         });
       };
 
