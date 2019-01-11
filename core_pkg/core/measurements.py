@@ -100,28 +100,37 @@ def group_by_year(m):
 
 # Aggregation functions
 def total(group):
-    """Return total of all measurment values from a group."""
+    """Return total of all measurement values from a group. Unit is tons per
+    year."""
 
-    return sum(m.value for m in group)
+    return sum(round(m.value / 1000, 3) for m in group)
 
 
 def mean(group):
-    """Return mean of all measurment values from a group."""
+    """Return mean of all measurement values from a group. Unit is tons per
+    year."""
 
     group = list(group)
     count = len(group)
 
-    return round(total(group) / count, 3)
+    return round((total(group) / count) / 1000, 3)
 
 
 def median(group):
+    """Return median of all measurement values from a group. Unit is tons per
+    year."""
 
     values = sorted([m.value for m in group])
 
-    return round(statistics.median(values), 3)
+    return round((statistics.median(values)) / 1000, 3)
 
 
-AGGREGATORS = {"len": len, "total": total, "mean": mean, "median": median}
+AGGREGATORS = {
+    "len": {"fun": len, "unit": "Hlášení", "label": "Počet hlášení"},
+    "total": {"fun": total, "unit": "t", "label": "Celkové emise"},
+    "mean": {"fun": mean, "unit": "t", "label": "Průměrné emise"},
+    "median": {"fun": median, "unit": "t", "label": "Medián emisí"},
+}
 
 
 if __name__ == "__main__":
