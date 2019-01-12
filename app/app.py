@@ -2,28 +2,15 @@ import json
 import logging
 
 from flask import Flask, render_template, request
-from wtforms import Form
-from wtforms.fields import SelectField
 
 from core import chemicals, web
 from core.measurements import AGGREGATORS
+from forms import ChemicalParamForm, ParamForm
 
 logger = logging.getLogger(__name__)
 
 
 app = Flask(__name__)
-
-
-class ParamForm(Form):
-    all_chems = [
-        (c.iri, c.name) for c in sorted(chemicals.get_all_chemicals().values())
-    ]
-    functions = [(k, v.get("label")) for k, v in AGGREGATORS.items()]
-    types = [("bar", "Podle regionů"), ("line", "Celkem")]
-
-    chemical = SelectField("Látka", choices=all_chems)
-    fun = SelectField("Agregační funkce", choices=functions)
-    chart_type = SelectField("Zobrazení", choices=types)
 
 
 @app.route("/regions")
@@ -41,18 +28,6 @@ def regions():
     return render_template(
         "regions.html", fun=fun, chemical=chemical, form=form, unit=unit, label=label
     )
-
-
-class ChemicalParamForm(Form):
-    all_chems = [
-        (c.iri, c.name) for c in sorted(chemicals.get_all_chemicals().values())
-    ]
-    chemical = SelectField("Látka", choices=all_chems)
-
-    years = list(zip(range(2004, 2013), range(2004, 2013)))
-
-    year_from = SelectField("Od roku", choices=years)
-    year_to = SelectField("Do roku", choices=years)
 
 
 @app.route("/chemicals")
