@@ -25,8 +25,8 @@ class ParamForm(Form):
     chart_type = fields.SelectField("Zobrazení", choices=types)
 
 
-@app.route("/")
-def index():
+@app.route("/regions")
+def regions():
     chem_iri = request.args.get("chemical", "oxid-uhličitý-co2-")
     fun = request.args.get("fun", "mean")
     unit = AGGREGATORS.get(fun).get("unit", "t")
@@ -38,7 +38,7 @@ def index():
     chemical = chemicals.get_chemical(chem_iri)
 
     return render_template(
-        "index.html", fun=fun, chemical=chemical, form=form, unit=unit, label=label
+        "regions.html", fun=fun, chemical=chemical, form=form, unit=unit, label=label
     )
 
 
