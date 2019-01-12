@@ -34,7 +34,7 @@ def color_generator():
     )
 
 
-def get_datasets(
+def region_datasets(
     chemical: str,
     regions: Union[None, str, List[str]] = None,
     years: Union[None, int, List[int]] = None,

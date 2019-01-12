@@ -18,19 +18,22 @@ class ParamForm(Form):
         (c.iri, c.name) for c in sorted(chemicals.get_all_chemicals().values())
     ]
     functions = [(k, v.get("label")) for k, v in AGGREGATORS.items()]
+    types = [("bar", "Podle regionů"), ("line", "Celkem")]
 
     chemical = fields.SelectField("Chemikálie", choices=all_chems)
     fun = fields.SelectField("Agregační funkce", choices=functions)
+    chart_type = fields.SelectField("Zobrazení", choices=types)
 
 
 @app.route("/")
 def index():
-    chem_iri = request.args.get("chemical", "chemical=oxid-uhličitý-co2-")
+    chem_iri = request.args.get("chemical", "oxid-uhličitý-co2-")
     fun = request.args.get("fun", "mean")
     unit = AGGREGATORS.get(fun).get("unit", "t")
     label = AGGREGATORS.get(fun).get("label", "Průměrné emise")
+    chart_type = request.args.get("chart_type", "bar")
 
-    form = ParamForm(fun=fun, chemical=chem_iri)
+    form = ParamForm(fun=fun, chemical=chem_iri, chart_type=chart_type)
 
     chemical = chemicals.get_chemical(chem_iri)
 
@@ -39,14 +42,14 @@ def index():
     )
 
 
-@app.route("/api/get/datasets/<iri>")
+@app.route("/api/by-regions/<iri>")
 def datasets(iri):
     years = list(range(2004, 2013))
 
     try:
         fun = AGGREGATORS.get(request.args.get("fun", "len")).get("fun", len)
 
-        datasets = list(web.get_datasets(iri, years=years, fun=fun))
+        datasets = list(web.region_datasets(iri, years=years, fun=fun))
     except:
         logger.exception("Failed to retrieve datasets.")
         datasets = []

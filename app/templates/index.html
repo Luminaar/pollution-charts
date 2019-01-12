@@ -13,6 +13,7 @@
       <div id="param-form" class="select">
         {% from "_formhelpers.html" import render_field %}
         <form>
+            {{ render_field(form.chart_type) }}
             {{ render_field(form.fun) }}
             {{ render_field(form.chemical) }}
             <span class="form-field">
@@ -27,10 +28,15 @@
     </div>
 
     <script>
+      var urlParams = new URLSearchParams(location.search);
+      var chartType = urlParams.has("chart_type") ? urlParams.get("chart_type") : "bar";
+      var stacked = chartType === "line" ? true : false;
+      var fun = urlParams.has("fun") ? urlParams.get("fun") : "mean"
+
       function createChart(data) {
         var ctx = document.getElementById("myChart").getContext('2d');
         var myChart = new Chart(ctx, {
-            type: 'bar',
+            type: chartType,
             data: data,
             options: {
               maintainAspectRation: false,
@@ -41,14 +47,14 @@
               },
               scales: {
                   yAxes: [{
+                      stacked: stacked,
                       scaleLabel: {
                         display: true,
                         labelString: "{{ unit }} / rok",
                         fontSize: 16
                       },
                       ticks: {
-                        beginAtZero:true,
-                        stepSize: '{{ unit }}' === "Hlášení" ? 1 : undefined
+                        beginAtZero:true
                       }
                   }],
                   xAxes: [{
@@ -66,7 +72,7 @@
         });
       };
 
-      fetch('/api/get/datasets/{{ chemical.iri }}?fun={{ fun }}')
+      fetch('/api/by-regions/{{ chemical.iri }}?fun={{ fun }}')
         .then(function(response) {
           return response.json();
         })
