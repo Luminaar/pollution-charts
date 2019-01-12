@@ -1,120 +1,101 @@
-<!DOCTYPE html>
+{% extends "base.html" %}
 
-<html>
-  <head>
-    <title>{{ chemical.name }}</title>
-    <script type="text/javascript" charset="utf-8" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="static/style.css">
-  </head>
+{% block includescript %}
+<script type="text/javascript" charset="utf-8" src="/static/js/chemical-chart.js"></script>
+{% endblock %}
 
-  <body>
+{% block header %}
+<div id="param-form" class="select">
+  {% from "_formhelpers.html" import render_field %}
+  <form>
+      {{ render_field(form.chemical) }}
+      {{ render_field(form.year_from) }}
+      {{ render_field(form.year_to) }}
+      <span class="form-field">
+        <input type=submit value=Odeslat>
+      </span>
+  </form>
+</div>
+{% endblock %}
 
-    <div id="header">
-      <div id="param-form" class="select">
-        {% from "_formhelpers.html" import render_field %}
-        <form>
-            {{ render_field(form.chemical) }}
-            <span class="form-field">
-              <input type=submit value=Odeslat>
-            </span>
-        </form>
-      </div>
-    </div>
+{% block body %}
+<div id="chemical" style="width: 39vw; float: left;">
+  <h2>Informace o látce</h2>
+  <table>
+    <tr>
+      <td>
+        <strong>
+          Název
+        </strong>
+      </td>
+      <td>
+        {{ chemical.name }}
+      </td>
+    </tr>
 
-    <div id="chemical" style="width: 39vw; float: left;">
-      <h2>Informace o látce</h2>
-      <table>
-        <tr>
-          <td>
-            <strong>
-              Název
-            </strong>
-          </td>
-          <td>
-            {{ chemical.name }}
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <strong>
-              Vzorec
-            </strong>
-          </td>
-          <td>
-            {{ chemical.formula or "" }}
-          </td>
-        </tr>
+    {% if chemical.info %}
+    <tr>
+      <td colspan=2>
+        <p>
+          {{ chemical.info|safe }}
+        </p>
+      </td>
+    </tr>
+    {% endif %}
 
-        <tr>
-          <td>
-            <strong>
-              S-Věty
-            </strong>
-          </td>
-        </tr>
-        {% for k in chemical.s_labels %}
-        <tr>
-          <td>
-            {{ k }}
-          </td>
-          <td>
-            {{ chemical.s_labels[k] }}
-          </td>
-        </tr>
-        {% endfor %}
+    <tr>
+      <td>
+        <strong>
+          Vzorec
+        </strong>
+      </td>
+      <td>
+        {{ chemical.formula}}
+      </td>
+    </tr>
 
-        <tr>
-          <td>
-            <strong>
-              R-Věty
-            </strong>
-          </td>
-        </tr>
-        {% for k in chemical.r_labels %}
-        <tr>
-          <td>
-            {{ k }}
-          </td>
-          <td>
-            {{ chemical.r_labels[k] }}
-          </td>
-        </tr>
-        {% endfor %}
-      </table>
-    </div>
+    <tr>
+      <td>
+        <strong>
+          R-Věty
+        </strong>
+      </td>
+    </tr>
+    {% for k in r_labels %}
+    <tr>
+      <td>
+        {{ k }}
+      </td>
+      <td>
+        {{ chemical.r_labels[k] }}
+      </td>
+    </tr>
+    {% endfor %}
 
-    <div id="chart" style="width: 60vw; float: right;">
-      <canvas id="myChart"></canvas>
-    </div>
+    <tr>
+      <td>
+        <strong>
+          S-Věty
+        </strong>
+      </td>
+    </tr>
+    {% for k in s_labels %}
+    <tr>
+      <td>
+        {{ k }}
+      </td>
+      <td>
+        {{ chemical.s_labels[k] }}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
 
-    <script>
-      function createChart(data) {
-        var ctx = document.getElementById("myChart").getContext('2d');
-        var myChart = new Chart(ctx, {
-            type: "pie",
-            data: data,
-            options: {
-              maintainAspectRation: false,
-              title: {
-                display: true,
-                text: "Počty měření podle typu emisí",
-                fontSize: 18
-              },
-              legend: {
-                "position": "right",
-              },
-          }
-        });
-      };
-
-      fetch('/api/chemical/{{ chemical.iri }}')
-        .then(function(response) {
-          return response.json();
-        })
-        .then(function(data) {
-          createChart(data)
-        });
-
-    </script>
-  </body>
-</html>
+<style>
+  #chart {
+   width: 60vw;
+   float: right;
+  }
+</style>
+{% endblock %}

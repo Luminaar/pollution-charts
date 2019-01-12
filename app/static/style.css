@@ -4,11 +4,17 @@ body {
   margin: 0;
   font-family: 'Montserrat', sans-serif;
 }
+
+p {
+  line-height: 1.6em;
+  text-align: justify;
+}
+
 #header {
   text-align: center;
   z-index: 100;
   width: 100%;
-  background-color: #94f593f7;
+  background-color: #fffac4f7;
   padding: 0.1em;
 
   -webkit-box-shadow: 3px 3px 12px 0px rgba(176,176,176);

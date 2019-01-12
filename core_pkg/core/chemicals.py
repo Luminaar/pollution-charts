@@ -4,6 +4,8 @@ from dataclasses import dataclass
 from itertools import groupby
 from typing import Dict, Optional
 
+import wikipedia
+
 from core import service
 
 
@@ -15,6 +17,16 @@ class Chemical:
     formula: str
     s_labels: dict
     r_labels: dict
+
+    def retrieve_info(self):
+        """Try to retrieve information about the chemical from wikipedia."""
+
+        wikipedia.set_lang("cs")
+        try:
+            query = self.name.split("(")[0].strip()
+            self.info = wikipedia.summary(wikipedia.search(query)[0])
+        except:
+            self.info = ""
 
 
 def retrieve_chemical_data():
@@ -63,18 +75,20 @@ def transform_chemicals(data, s_labels, r_labels):
         s_lbls: dict = {}
         r_lbls: dict = {}
         for item in group:
-            formula = item.get("formula", None)
+            formula = item.get("formula", "")
             name = item["name"]
 
             try:
                 s_label = s_labels[item["slabel"]]
-                s_lbls[s_label[0]] = s_label[1]
+                key = s_label[0].split("(")[0].strip()
+                s_lbls[key] = s_label[1]
             except KeyError:
                 pass
 
             try:
                 r_label = r_labels[item["rlabel"]]
-                r_lbls[r_label[0]] = r_label[1]
+                key = r_label[0].split("(")[0].strip()
+                r_lbls[key] = r_label[1]
             except KeyError:
                 pass
 

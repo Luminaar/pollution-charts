@@ -49,15 +49,36 @@ class ChemicalParamForm(Form):
     ]
     chemical = SelectField("Látka", choices=all_chems)
 
+    years = list(zip(range(2004, 2013), range(2004, 2013)))
+
+    year_from = SelectField("Od roku", choices=years)
+    year_to = SelectField("Do roku", choices=years)
+
 
 @app.route("/chemicals")
 def chemical():
     chem_iri = request.args.get("chemical", "oxid-uhličitý-co2-")
-    form = ChemicalParamForm(chemical=chem_iri)
+    year_from = request.args.get("year_from", 2004)
+    year_to = request.args.get("year_to", 2012)
+    form = ChemicalParamForm(chemical=chem_iri, year_from=year_from, year_to=year_to)
 
     chemical = chemicals.get_chemical(chem_iri)
+    chemical.retrieve_info()
+    chemical.info = chemical.info.replace("\n", "<br>")
 
-    return render_template("chemicals.html", form=form, chemical=chemical)
+    SUB = str.maketrans("0123456789", "₀₁₂₃₄₅₆₇₈₉")
+    chemical.formula = chemical.formula.translate(SUB)
+
+    s_labels = [k for k in sorted(list(chemical.s_labels.keys()))]
+    r_labels = [k for k in sorted(list(chemical.r_labels.keys()))]
+
+    return render_template(
+        "chemicals.html",
+        form=form,
+        chemical=chemical,
+        s_labels=s_labels,
+        r_labels=r_labels,
+    )
 
 
 @app.route("/api/by-regions/<iri>")
@@ -78,6 +99,9 @@ def region_data(iri):
 
 @app.route("/api/chemical/<iri>")
 def chemical_data(iri):
-    years = list(range(2004, 2013))
+    year_from = request.args.get("year_from", 2004)
+    year_to = request.args.get("year_to", 2012)
+    years = list(range(int(year_from), int(year_to) + 1))
+    print(years)
 
     return json.dumps(web.chemical_datasets(iri, years))

@@ -80,8 +80,8 @@ def chemical_datasets(chemical: str, years: List[int]):
 
     by_em_type = {}
     for emission_group in group_by_emission(ms):
+        emission_group = list(filter(lambda m: m.year in years, emission_group))
         emission_type = emission_group[0].emission_type
-        print(emission_type, len(emission_group))
 
         by_em_type[emission_type] = {
             "count": len(emission_group),
