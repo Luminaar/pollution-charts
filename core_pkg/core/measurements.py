@@ -16,7 +16,7 @@ class Measurement:
         region: str,
         district: str,
         emission_type: str,
-        year: int,
+        year: str,
         value: float,
         instrument: str,
         chemical: Optional[str] = None,
@@ -25,8 +25,8 @@ class Measurement:
         self.iri = iri
         self.region = region
         self.district = district.strip()
-        self.emission_type = emission_type
-        self.year = year
+        self.emission_type = emission_type.split("/")[-1]
+        self.year = int(year.split("-")[0])
         self.value = float(value)
         self.instrument = instrument
         self.chemical = chemical
@@ -96,6 +96,16 @@ def group_by_year(m):
     """Group measurements by year and return a list of groups."""
 
     return [list(group) for key, group in groupby(m, operator.attrgetter("year"))]
+
+
+def group_by_emission(m):
+    """Group measurements by emission type and return a list of groups."""
+
+    m = sorted(m, key=operator.attrgetter("emission_type"))
+
+    return [
+        list(group) for key, group in groupby(m, operator.attrgetter("emission_type"))
+    ]
 
 
 # Aggregation functions

@@ -1,11 +1,10 @@
 """This module provides functions that are used by web framework to access
 chemicals and pollution measurements data."""
 
-import json
 from typing import Callable, Generator, List, Union
 
-from core.chemicals import get_chemical
-from core.measurements import get_measurements, group_by_region, group_by_year
+from core.measurements import (get_measurements, group_by_emission,
+                               group_by_region, group_by_year)
 
 
 def color_generator():
@@ -60,7 +59,7 @@ def region_datasets(
             dataset = {"label": region_name, "backgroundColor": c, "borderColor": c}
             data = {}
             for year_group in group_by_year(region_group):
-                year = int(year_group[0].year.split("-")[0])
+                year = year_group[0].year
 
                 if not years or year in years:
                     data[year] = fun(year_group)
@@ -74,5 +73,39 @@ def region_datasets(
         yield dataset
 
 
+def chemical_datasets(chemical: str, years: List[int]):
+    """Return data in JSON that can be used by `charts.js` library."""
+
+    ms = filter(lambda m: m.year in years, get_measurements(chemical))
+
+    by_em_type = {}
+    for emission_group in group_by_emission(ms):
+        emission_type = emission_group[0].emission_type
+        print(emission_type, len(emission_group))
+
+        by_em_type[emission_type] = {
+            "count": len(emission_group),
+            "total": sum(m.value for m in emission_group),
+        }
+
+    colors = color_generator()
+
+    labels = []
+    data = []
+    bgColors = []
+    for k, v in by_em_type.items():
+        labels.append(k)
+        data.append(v["count"])
+        bgColors.append(next(colors))
+
+    return {"datasets": [{"data": data, "backgroundColor": bgColors}], "labels": labels}
+
+
 def avg_value(group):
     return sum(m.value for m in group) / len(group)
+
+
+if __name__ == "__main__":
+    chemical = "oktylfenoly-a-oktylfenol-ethoxyláty"
+    years = list(range(2004, 2013))
+    chemical_datasets(chemical, years)

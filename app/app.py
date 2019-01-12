@@ -2,7 +2,8 @@ import json
 import logging
 
 from flask import Flask, render_template, request
-from wtforms import Form, fields
+from wtforms import Form
+from wtforms.fields import SelectField
 
 from core import chemicals, web
 from core.measurements import AGGREGATORS
@@ -20,9 +21,9 @@ class ParamForm(Form):
     functions = [(k, v.get("label")) for k, v in AGGREGATORS.items()]
     types = [("bar", "Podle regionů"), ("line", "Celkem")]
 
-    chemical = fields.SelectField("Chemikálie", choices=all_chems)
-    fun = fields.SelectField("Agregační funkce", choices=functions)
-    chart_type = fields.SelectField("Zobrazení", choices=types)
+    chemical = SelectField("Látka", choices=all_chems)
+    fun = SelectField("Agregační funkce", choices=functions)
+    chart_type = SelectField("Zobrazení", choices=types)
 
 
 @app.route("/regions")
@@ -42,8 +43,25 @@ def regions():
     )
 
 
+class ChemicalParamForm(Form):
+    all_chems = [
+        (c.iri, c.name) for c in sorted(chemicals.get_all_chemicals().values())
+    ]
+    chemical = SelectField("Látka", choices=all_chems)
+
+
+@app.route("/chemicals")
+def chemical():
+    chem_iri = request.args.get("chemical", "oxid-uhličitý-co2-")
+    form = ChemicalParamForm(chemical=chem_iri)
+
+    chemical = chemicals.get_chemical(chem_iri)
+
+    return render_template("chemicals.html", form=form, chemical=chemical)
+
+
 @app.route("/api/by-regions/<iri>")
-def datasets(iri):
+def region_data(iri):
     years = list(range(2004, 2013))
 
     try:
@@ -56,3 +74,10 @@ def datasets(iri):
 
     data = {"labels": years, "datasets": datasets}
     return json.dumps(data, ensure_ascii=False)
+
+
+@app.route("/api/chemical/<iri>")
+def chemical_data(iri):
+    years = list(range(2004, 2013))
+
+    return json.dumps(web.chemical_datasets(iri, years))
