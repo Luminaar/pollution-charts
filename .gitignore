@@ -3,3 +3,7 @@
 __pycache__
 venv/
 *.egg-info
+document/*.aux
+document/*.log
+document/*.gz
+document/*.pdf
