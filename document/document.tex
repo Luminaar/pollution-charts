@@ -1,0 +1,183 @@
+\documentclass[12pt]{article}
+
+\usepackage[a4paper, lmargin=1in, rmargin=1in, tmargin=1in, bmargin=1in]{geometry}
+\usepackage[czech]{babel}
+\usepackage{fontspec}
+\usepackage{hyperref}
+\setmainfont{Latin Modern Roman}
+\setmonofont{Latin Modern Mono}
+\parindent=0pt
+\parskip=1em
+\usepackage{setspace}
+\onehalfspacing
+
+\usepackage[framemethod=tikz]{mdframed}
+\mdfdefinestyle{anecdote}{%
+	leftmargin=0.5cm,rightmargin=0.5cm,%
+	innerleftmargin=1cm,innerrightmargin=1cm,innerbottommargin=1cm,%
+	roundcorner=5pt,%
+	backgroundcolor=purple!5,%
+	align=center,%
+	frametitleaboveskip=0.5cm%
+}
+
+\title{Vizualizace dat z Integravaného registru znečišťování}
+\author{Bc. Maxim Kovykov}
+
+\begin{document}
+	
+\begin{titlepage}
+	\maketitle
+	\thispagestyle{empty}
+\end{titlepage}
+
+\newpage
+
+
+\section*{Úvod}
+Cílem této práce je vytvořit vizualizace dat s využitím propojených dat, popsat poznatky spojené s tvorbou tohoto typu aplikace, zhodnotit výhody a nedostatky zvolených přístupů a okomentovat vhodnost technologií pro široké využívání.
+
+Tato semestrální práce nemá textový ani věcný překryv, ani jinou věcnou souvislost, s jinými semestrálními nebo kvalifikačními pracemi, které autor zpracovával.
+
+
+\section*{Integrovaný registr znečišťování}
+Jako subjekt byla vybrána data z Integrovaného Registru Znečišťování (IRZ). IRZ je veřejný informační systém spravovaný Ministerstvem životního prostředí. Povinnost provozovat tento registr vyplývá z tzv. Aarhauské úmluvy o přístupu k informacím o znečišťování. Existence registu je dána zákonem č. 76/2002 Sb. (o integrované prevenci a omezování znečištění).
+
+IRZ sleduje celkem 72 látek a rozlišuje různé druhy úniků (do ovzduší, půdy a vody) a navíc sleduje přenos látek v odpadech a odpadních vodách. Úniky jsou sledovány pro jednotlivé provozovny. Podnikům vzniká povinnost ohlásit všechny úniky látky (v důsledků pravidelných, nepravidelných, úmyslných, neúmyslných i havarijních činností) při překročení stanovených prahových hodnot.
+
+Součástí hlášení je kromě výše a druhu úniku a údajů o provozovně také informace o způsobu zjištění přenosu (měření, výpočet, odhad). U odpadů je také ohlášeno, zda byly odstraněny nebo využity a údaje o tom, jaká fyzická osoba takto učinila.
+
+
+\section*{Veřejně dostupná data}
+IRZ je veřejný registr a proto jeho provozovatelé musí poskytnout bezplatný přístup k datům. Hlavním zdrojem informací je web \url{https://irz.cenia.cz}, který obsahuje aktuality, relevantní přůručky, vyhlášky a zákony. Je zde také přístupný vyhledávací systém, ve kterém lze vyhledávat podle různých kritérií (látky, provozovny, druhu odpadu, atd). Data však nejsou dostupná v strojově čitelné podobě (pouze jako HTML tabulka). Data jsou dostupná od roku 2004 do roku 2017.
+
+Na webu jsou také dostupné souhrnné zprávy zpracované Životním prostředím, avšak nejnovější zpráva je z roku 2010.
+
+Další relevantní webovou stránkou je \url{https://www.irz.cz}, avšak podle všeho není tato stránka od roku 2010 aktualizována.
+
+
+\section*{Propojená data}
+Data z IRZ jsou také dostupná jako data-sety na portálu \url{opendata.cz}. Jeden data-set obsahuje údaje o ohlašovaných látkách\cite{dataset-latky}. Jednotlivá hlášení jsou pak obsažena ve zvláštním data-setu\cite{dataset-hlaseni}. Data-set není zcela aktuální a obsahuje pouze data od roku 2004 do 2012.
+
+Data-sety lze buď procházet pomocí on-line SPARQL query editoru, stáhnout jako textový soubor nebo pomocí SPARQL end-pointu. Pro účely této práce byla použita kombinace všech tří přístupů.
+
+
+\section*{Zpracování}
+
+\subsection*{Předběžný průzkum dat}
+Před vypracováním práce byl nejdříve proveden průzkum dostupných propojených dat. Protože k data-setům nejsou vypracované žádné podrobné popisy ani příklady získání dat, byla struktura vyhodnocena stažením celého data-setu (textový soubor o cca 34MB) a ručním procházením.
+
+Nakonec byly pro účely vizualizace zvoleny následující údaje o látkách:
+
+	\begin{itemize}
+		\item Název
+		\item Vzorec (pokud byl dostupný)
+		\item S-věty (pokyny pro bezpečné nakládání s látkou)
+		\item R-věty (popis rizik spojených s látkou)
+	\end{itemize}
+	
+Pro jednotlivá měření úniků byly zvoleny tyto údaje:
+
+	\begin{itemize}
+		\item Rok hlášení
+		\item Typ úniku (do vzduchu, vody, půdy, jako odpad)
+		\item Výše uniku
+		\item Látka
+		\item Kraj ve kterém se provozovna nachází
+	\end{itemize}
+	
+Přesto, že data-set nemá řádný popis, je orientace v datech zjednodušena využitím standardních schémat jako je slovník \emph{RDF}, \emph{schema.org} nebo \emph{SKOS}. Díky tomu bylo na první pohled zřejmé, co které pole v data-setu znamená.
+
+Pokud by data byla dostupná jako běžná SQL databáze s vlastními poli, byla by orientace v datech bez podrobného popisu nemožná (což je běžný případ některých veřejně dostupných data-setů veřejné správy).
+
+Jen u pole \emph{výše úniku} bylo nutné dohledat jednotku, ve které se úniky ohlašují.
+
+
+\subsection*{Nástroje}
+Pro co největší dostupnost a interaktivity bylo zvoleno zpracování v podobě webové aplikace. Byly použity tyto volně dostupné nástroje a knihovny:
+
+	\begin{description}
+		\item[Python] Programovací jazyk, který je rozšířený jak pro tvorbu webových aplikací tak i pro zpracován dat
+		\item[Flask] Knihovna pro tvorbu webových aplikací
+		\item[SPARQLWrapper] Knihovna pro zpracování SPARQL dotazů
+		\item[chart.js] Front-endová knihovna pro tvorbu grafů
+		\item[PythonAnywhere.com] Poskytovatel hostingu webových aplikací
+	\end{description}
+
+
+\subsection*{Získání dat a seskupování}
+Pro různá data byl zvolen odlišný přístup. Seznam ohlašovaných látek a příslušné údaje (vzorec, S-věty, R-věty) byly uloženy přes webové rozhraní a vloženy do zdrojového kódu aplikace jako datové soubory. Tento přístup je vhodnější, protože jde o poměrně malý objem dat, která se budou zobrazovat každým uživatelem a často.
+
+Pro získání dat o měřeních byl zvolen jiný přístup. Data jsou získávána pomocí SPARQL dotazu podle toho, jaké byly zvoleny parametry (IRI požadované látky).
+
+	\begin{verbatim}
+	select distinct ?iri, ?emission_type, ?year, ?value where
+	{
+	
+		?iri          sch:object <<<IRI látky>>>;
+		sch:additionalType ?emission_type;
+		sch:startTime ?year;
+		rdf:value ?value;
+		sch:instrument ?instrument;
+		sch:location ?location.
+		
+		?place        owl:sameAs ?location.
+		?place        sch:address ?addr.
+		?addr         sch:addressRegion ?district.
+		OPTIONAL      {?iri cenia:urceniOdpadu ?waste_designation}.
+	
+	} order by ?region ?year
+	\end{verbatim}
+
+Zde je vidět jedna z velkých výhod použití RDF oproti běžným relačním databázím. Jednotlivé informace nejsou uloženy v jedné entitě ale jsou reprezentována několika propojenými entitami (provozovna, přesná adresa provozovny, souřadnice provozovny, jednotlivá měření pro každý rok, atd). V relační databázi by se jednalo o několik tabulek, pro které by bylo nutné provádět velké množství komplikovaných JOIN dotazů. V tomto případě je propojení dat jednoduše řešeno pomocí SPARQL.
+
+Získaná data jsou poté seskupena podle kraje a podle roku. Seskupování probíhá na úrovni aplikace, protože SPARQL (podobně jako SQL) neumožňuje ve zkupinách získat jednotlivé odpovědi na dotaz, ale pouze agreguje určité sloupce (tj. nemůžeme jednoduše pracovat s jednotlivými "řádky").
+
+
+\subsection*{Vizualizace}
+Po získání a transformaci dat je možné tvořit různé vizualizace. Pro tuto práci byly zvoleny dvě - emise látky podle krajů po rocích a počet hlášení podle druhů emise.
+
+\subsubsection*{Emise látky podle krajů po rocích}
+Uživatel zvolí látku ze seznamu a agregační funkci pro hodnotu hlášení (počet, průměrné emise, medián emisí, celkové emise). Dále může zvolit jeden ze dvou typů grafu - sloupcový, kde každý sloupec v jednom roce odpovídá jednomu kraji, nebo plošný, na kterém je vyznačen poměr každého kraje z celkové výše emisí.
+
+\subsubsection*{Počet hlášení podle druhů emise}
+Uživatel zvolí látku ze seznamu a rozmezí roků, pro které má být proveden výpočet. Je zobrazen koláčový graf, na kterém jsou znázorněny počty emisí různého druhu (do ovzduší, vody, půdy, odpad).
+
+Dále jsou na této stránce uvedeny informace o látce (pokud jsou dostupné) jako je název, vzorec, krátký popis (dynamicky načtený z Wikipedie) a seznam S a R vět.
+
+
+\section*{Využití podobné aplikace}
+Hlavním účelem tvorby IRZ a jiných veřejně dostupných registrů je větší informovanost a zapojení veřejnosti. Avšak pouhé zveřejnění dat není příliš přínosné, protože běžná veřejnost nemá znalosti potřebné k analýze těchto dat a proto z nich nemá žádný užitek. Také forma, ve které jsou data poskytována může být překážkou k využívání.
+
+Tvorba přehledných, interaktivních vizualizací zvyšuje přínos pro běžné uživatele.
+
+Pokud jsou data zpřístupněna ve strojově čitelné podobě, není možnost tvořit podobné aplikace vymezena jenom pro správce konkrétního systému ale může se zapojit i odbornější veřejnost.
+
+Tvorba jednoduchých aplikací jako je tato pak zvýší veřejnosti, což je důležité pro dobře fungující společnost.
+
+
+\section*{Hodnocení zvolených přístupů}
+Hlavním přínosem využití propojených dat je jejich "samo-dokumentace", tedy snadná orientace v datech díky použití sémantických slovníků.
+
+SPARQL také umožňuje jednoduché dotazování nad komplexními daty, které jsou rozprostřeny do mnoha entit ("relačních tabulek").
+
+Jednou z hlavních nevýhod je větší nárok na servery. Aplikace provádí dotazy, které musí zpracovat jiný server, poté musí aplikace zpracovat data tak, aby je mohla použít. To způsobuje značné prodlevy a podepisuje se to na rychlosti celé aplikace (načítání grafů je viditelně pomalé). Pokud by byla aplikace aktivně využívána mnoha uživateli, zřejmě by došlo k přetížení serverů.
+
+Další nevýhodou je, že (v tomto případě) nejsou RDF data-sety poskytovány oficiálně a proto nejsou aktuální.
+
+Tvorba této aplikace neměla žádné speciální požadavky na nástroje (např. specializovaný software). Je nutná znalost dotazovacího jazyka SPARQL ale pro vývojáře, kteří ovládají běžné dotazovací jazyky nejde o překážku.
+
+Hlavní překážkou k tvorbě podobných aplikací je tedy nedostupnost propojených dat z oficiálních zdrojů.
+ 
+
+\begin{thebibliography}{1}
+
+	\bibitem{dataset-latky} https://linked.opendata.cz/dataset/cenia-irz-chemicals
+	\bibitem{dataset-hlaseni} https://linked.opendata.cz/dataset/cenia-pollution
+
+\end{thebibliography}
+
+
+
+
+\end{document}
