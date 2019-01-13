@@ -6,12 +6,69 @@
 
 {% block header %}
 <div id="index-header">
+  Zvolte vizualizaci:
   <span class="header-link">
-    <a href="/chemicals">Údaje o látkách</a>
+    <a href="/chemicals">Počty hlášení</a>
   </span>
 
   <span class="header-link">
-    <a href="/regions">Znečištění v krajích</a>
+    <a href="/regions">Emise podle krajů</a>
   </span>
+</div>
+{% endblock %}
+
+
+{% block body %}
+<div style="width: 50vw; margin-left: 10vw">
+  <h1>Úvod</h1>
+  <p>
+    Tato aplikace poskytuje vizualizace dat z Integrovaného registru
+    znečištování. IRZ je veřejný informační systém spravovaný Ministerstvem
+    životního prostředí. Povinnost provozovat tento registr vyplývá z tzv.
+    Aarhauské úmluvy o přístupu k informacím o znečišťování.
+  </p>
+
+  <p>
+    IRZ sleduje celkem 72 látek a rozlišuje různé druhy úniků (do ovzduší, půdy
+    a vody) a navíc sleduje přenos látek v odpadech a odpadních vodách. Úniky
+    jsou sledovány pro jednotlivé provozovny. Podnikům vzniká povinnost ohlásit
+    všechny úniky látky (v důsledků pravidelných, nepravidelných, úmyslných,
+    neúmyslných i havarijních činností) při překročení stanovených prahových
+    hodnot.
+  </p>
+
+  <p>
+    Součástí hlášení je kromě výše a druhu úniku a údajů o provozovně také
+    informace o způsobu zjištění přenosu (měření, výpočet, odhad). U odpadů je
+    také ohlášeno, zda byly odstraněny nebo využity a údaje o tom, jaká fyzická
+    osoba takto učinila.
+  </p>
+
+
+  <h1>Vizualizace</h1>
+  <h2>Emise podle krajů po rocích</h2>
+  <p>
+    Zvolte látku ze seznamu. Zvolte agregační funkci pro hodnotu hlášení (počet
+    hlášní, průměrné emise v kraji, medián emise, celkové emise).
+  </p>
+
+  <p>
+    Dostupné jsou dva grafy - sloupcový, kde každý sloupec v jednom roce
+    odpovídá jednomu kraji, nebo plošný, na kterém je vyznačen poměr každého
+    kraje z celkové výše emisí.
+  </p>
+
+  <h2>Počet hlášení podle druhů emise</h2>
+  <p>
+    Zvolte látku ze seznamu a rozmezí roků, pro které má být proveden výpočet.
+    Je zobrazen koláčový graf, na kterém jsou znázorněny počty emisí různého
+    druhu (do ovzduší, vody, půdy, odpad).
+  </p>
+
+  <p>
+    Dále jsou na této stránce uvedeny informace o látce (pokud jsou dostupné)
+    jako je název, vzorec, krátký popis (dynamicky načtený z Wikipedie) a seznam
+    S a R vět.
+  </p>
 </div>
 {% endblock %}
