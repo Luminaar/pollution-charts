@@ -6,4 +6,4 @@ Ministerstvem životního prostředí.
 Aplikace byla vypracována v rámci předmětu 4IZ440 - Propojená data na
 webu.
 
-Aplikaci běží na adrese: [emissions.luminar.xyz](https://emissions.luminar.xyz)
+Aplikaci běží na adrese: [emissions.luminar.xyz](http://emissions.luminar.xyz)
