@@ -47,6 +47,32 @@ p {
   margin-right: 20px;
 }
 
+#index-header {
+  padding: 10px;
+}
+
+.header-link {
+  margin: 15px;
+
+}
+
+.header-link a {
+  font-size: 13px;
+  text-decoration: none;
+  display: inline-block;
+  padding: 10px 16px;
+  outline: 0;
+  border: 1px solid #ececec;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #555555;
+}
+
+.header-link a:hover {
+  color: #000000;
+  background: #f6f6f6;
+}
+
 #chart {
   width: 85vw;
   margin-left: auto;

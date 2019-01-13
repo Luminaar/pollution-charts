@@ -3,14 +3,20 @@ import logging
 
 from flask import Flask, render_template, request
 
+from app.forms import ChemicalParamForm, ParamForm
 from core import chemicals, web
 from core.measurements import AGGREGATORS
-from forms import ChemicalParamForm, ParamForm
 
 logger = logging.getLogger(__name__)
 
 
 app = Flask(__name__)
+
+
+@app.route("/")
+def index():
+
+    return render_template("index.html")
 
 
 @app.route("/regions")

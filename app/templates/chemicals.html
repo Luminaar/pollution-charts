@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block title %}
+  Údaje o látce: {{ chemical.name }}
+{% endblock %}
+
 {% block includescript %}
 <script type="text/javascript" charset="utf-8" src="/static/js/chemical-chart.js"></script>
 {% endblock %}

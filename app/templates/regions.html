@@ -1,5 +1,9 @@
 {% extends "base.html" %}
 
+{% block title %}
+  Emise v regionech: {{ chemical.name }}
+{% endblock %}
+
 {% block includescript %}
 <script type="text/javascript" charset="utf-8" src="/static/js/region-chart.js"></script>
 {% endblock %}
