@@ -1,3 +1,4 @@
 SPARQLWrapper
 Flask
 wtforms
+wikipedia
