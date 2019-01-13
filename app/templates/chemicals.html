@@ -12,6 +12,9 @@
 <div id="param-form" class="select">
   {% from "_formhelpers.html" import render_field %}
   <form>
+      <span class="header-link">
+        <a href="/">Zpět</a>
+      </span>
       {{ render_field(form.chemical) }}
       {{ render_field(form.year_from) }}
       {{ render_field(form.year_to) }}
