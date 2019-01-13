@@ -7,3 +7,4 @@ document/*.aux
 document/*.log
 document/*.gz
 document/*.pdf
+document/*.out
